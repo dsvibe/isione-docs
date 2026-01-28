@@ -1,0 +1,57 @@
+site_name: IsiOne Documentation
+site_description: Developer documentation for the IsiOne collaborative task management app
+site_url: https://dsvibe.github.io/isione-docs/
+
+repo_name: dsvibe/isione-docs
+repo_url: https://github.com/dsvibe/isione-docs
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.highlight
+    - content.code.copy
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - admonition
+  - pymdownx.details
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Architecture:
+      - Resources: architecture/resources.md
+      - Task Status: architecture/task-status.md
+      - Decisions: architecture/decisions.md
+      - Flows:
+          - Create Pod: architecture/flows/create-pod.md
+          - Create Task: architecture/flows/create-task.md
+          - Complete Task: architecture/flows/complete-task.md
+
+exclude_docs: |
+  CLAUDE.md

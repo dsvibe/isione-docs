@@ -1,19 +1,29 @@
 # IsiOne Documentation
 
-IsiOne is a collaborative task management app for recurring chores and responsibilities. Users create pods (shared spaces for households or teams) and define tasks with configurable timing for pending and overdue states. Tasks can be completed via web through the user interface, or by mobile scanning NFC tags.
+Developer documentation for the IsiOne project, hosted at [dsvibe.github.io/isione-docs](https://dsvibe.github.io/isione-docs/).
 
-A physical controller device with status LEDs provides at-a-glance visibility of task states—no need to open an app to see what needs doing.
+## Local Development
 
-This documentation covers interfaces, APIs, and flows between components. Implementation details live in each component's own repository.
+```bash
+docker compose run --rm --service-ports docs
+```
 
-## Architecture
+Then open http://127.0.0.1:8000
 
-- [Resources](architecture/resources.md) - Core domain concepts: pods, tasks, entries, memberships
-- [Task Status](architecture/task-status.md) - How task status is calculated from completion history
-- [Decisions](architecture/decisions.md) - Technical decisions affecting the API and interfaces
+## Deployment
 
-### Flows
+The site deploys automatically to GitHub Pages when changes are pushed to `main`.
 
-- [Create Pod](architecture/flows/create-pod.md) - Creating a new collaborative space
-- [Create Task](architecture/flows/create-task.md) - Adding a task to a pod
-- [Complete Task](architecture/flows/complete-task.md) - Recording task completion via web or NFC
+To enable deployment, go to repo Settings → Pages → Source and select **GitHub Actions**.
+
+## Structure
+
+```
+index.md              # Homepage
+architecture/         # System design, data flow, component interactions
+api/                  # API reference documentation (planned)
+server/               # Server-specific docs (planned)
+web/                  # Web frontend docs (planned)
+android/              # Android app docs (planned)
+controller/           # ESPHome controller docs (planned)
+```
