@@ -33,10 +33,12 @@ dsvibe/
 
 ```
 architecture/     # System design, data flow, component interactions
+style-guide.md    # Cross-platform design: icons, task fonts
 api/              # API reference documentation
 server/           # Server-specific docs
 web/              # Web frontend docs
 android/          # Android app docs
 ios/              # iOS app docs
 controller/       # ESPHome controller docs
+hardware/         # Physical components: enclosures, labels, NFC tags
 ```

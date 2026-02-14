@@ -17,3 +17,12 @@ This documentation covers interfaces, APIs, and flows between components. Implem
 - [Create Pod](architecture/flows/create-pod.md) - Creating a new collaborative space
 - [Create Task](architecture/flows/create-task.md) - Adding a task to a pod
 - [Complete Task](architecture/flows/complete-task.md) - Recording task completion via web or NFC
+
+## Style Guide
+
+- [Style Guide](style-guide.md) - Icons, fonts, and design decisions across all platforms
+
+## Hardware
+
+- [Labels](hardware/labels.md) - Printed labels for NFC tags and enclosure slots
+- [Printing Labels](hardware/printing-labels.md) - 3D printing enclosure slot labels with PrusaSlicer

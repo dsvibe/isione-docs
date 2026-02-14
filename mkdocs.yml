@@ -52,6 +52,10 @@ nav:
           - Create Pod: architecture/flows/create-pod.md
           - Create Task: architecture/flows/create-task.md
           - Complete Task: architecture/flows/complete-task.md
+  - Hardware:
+      - Labels: hardware/labels.md
+      - Printing Labels: hardware/printing-labels.md
+  - Style Guide: style-guide.md
 
 exclude_docs: |
   CLAUDE.md
