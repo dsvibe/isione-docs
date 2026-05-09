@@ -40,6 +40,14 @@ Task status is communicated through colour across all platforms (web, mobile, ha
 | Text secondary | <span style="display:inline-block;width:14px;height:14px;background:#aaaaaa;border-radius:50%;vertical-align:middle"></span> | `#aaaaaa` | Descriptions, secondary info |
 | Text muted | <span style="display:inline-block;width:14px;height:14px;background:#888888;border-radius:50%;vertical-align:middle"></span> | `#888888` | Tertiary text, placeholders |
 
+## Logo
+
+![IsiOne Logo](assets/logo.svg){ width="64" }
+
+A traffic light with a checkmark, representing the three task states (overdue, pending, OK). Uses the status colours (`#f87171`, `#fbbf24`, `#4ade80`) with a primary accent (`#646cff`) border.
+
+The source SVG is at [`docs/assets/logo.svg`](assets/logo.svg). Use it for favicons, app icons, and anywhere the brand mark is needed.
+
 ## Task Identity
 
 These elements identify tasks to users and must be consistent across all platforms.

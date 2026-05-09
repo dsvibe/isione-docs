@@ -55,7 +55,7 @@ If the tag isn't registered to a task:
 
 ### Create Task Entry
 
-[Swagger: POST /beta/pods/{podId}/tasks/{taskId}/entries](https://isione-api.home.demery.net/swagger/index.html#/tasks/post_beta_pods__podId__tasks__taskId__entries)
+[Swagger: POST /beta/pods/{podId}/tasks/{taskId}/entries](https://api.isione.dsvibe.io/swagger/index.html#/tasks/post_beta_pods__podId__tasks__taskId__entries)
 
 ```http
 POST /beta/pods/{podId}/tasks/{taskId}/entries
