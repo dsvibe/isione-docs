@@ -117,6 +117,22 @@ The font used for task names/headings across all platforms.
 - Use **Medium (500)** or **Semi-Bold (600)** weight
 - Semi-Bold recommended for 3D printed hardware labels
 
-## Platform-Specific Styles
+## Platform Conventions
 
-Fonts for body text, UI elements, and other non-task content are defined per-platform in their respective documentation.
+Apps should feel native to their host platform. Outside the cross-platform elements defined above — colours, logo, task icons (Lucide), and the task label font (Nunito) — typography, controls, navigation, and system iconography follow the host platform's conventions. Native is the default; deviations should be documented in the relevant component's own style notes.
+
+This applies to:
+
+- **Controls** — buttons, switches, pickers, sheets, and other widgets come from the platform's toolkit rather than custom-painted lookalikes.
+- **Chrome typography** — body text, navigation labels, and other non-task UI use the platform's system font.
+- **Navigation patterns** — tab placement, back-gesture behaviour, modal presentation, and similar idioms follow what users of that platform expect.
+- **System iconography** — back, share, menu, settings, and other system actions use the platform's icon set. Lucide is reserved for *task* icons, where consistency across platforms matters.
+- **Platform behaviours** — haptics, dynamic type / accessibility scaling, keyboard shortcuts, and theme-following respect the platform's norms.
+
+Examples of what "native" looks like:
+
+- **iOS** — SF / system font, UIKit or SwiftUI controls, SF Symbols for system actions.
+- **Android** — Material components, Roboto or system font, Material icons for system actions.
+- **Web** — the `system-ui` font stack so chrome typography picks up the visitor's OS font (San Francisco on macOS, Segoe UI on Windows, Roboto on Android, etc.); semantic HTML controls with minimal restyling.
+
+Specific toolkit choices, font stacks, and per-platform deviations live in each component's own documentation.
