@@ -46,12 +46,14 @@ nav:
   - Home: index.md
   - Architecture:
       - Resources: architecture/resources.md
+      - Permissions: architecture/permissions.md
       - Task Status: architecture/task-status.md
       - Decisions: architecture/decisions.md
       - Flows:
           - Create Pod: architecture/flows/create-pod.md
           - Create Task: architecture/flows/create-task.md
           - Complete Task: architecture/flows/complete-task.md
+          - Invites & Membership: architecture/flows/invites.md
   - Hardware:
       - Labels: hardware/labels.md
       - Printing Labels: hardware/printing-labels.md
