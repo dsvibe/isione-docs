@@ -6,7 +6,7 @@ Design decisions that apply across all IsiOne components (web, Android, iOS, har
 
 IsiOne aims for [WCAG 2.x](https://www.w3.org/TR/WCAG22/) **AAA** for text contrast — 7:1 for normal text, 4.5:1 for large text. The light palette meets this across the board; the dark palette currently clears **AA** (4.5:1 / 3:1) and is held there to avoid regressing shipped surfaces. New surfaces should target AAA where possible and not fall below AA.
 
-Status, feedback, and accent fills are not required to pass contrast thresholds on their own — what matters is the contrast of the label sitting on top of the fill, or of the surrounding role-coloured text.
+Status and feedback fills are not required to pass contrast thresholds on their own — they're paired with a text label, and the label carries the contrast. Accent is split per theme so its foreground value passes directly.
 
 ## Colours
 
@@ -20,12 +20,23 @@ Task status is communicated through colour across all platforms (web, mobile, ha
 | Pending | <span style="display:inline-block;width:14px;height:14px;background:#a78bfa;border-radius:50%;vertical-align:middle"></span> | `#a78bfa` | Task due but not yet overdue |
 | Overdue | <span style="display:inline-block;width:14px;height:14px;background:#f87171;border-radius:50%;vertical-align:middle"></span> | `#f87171` | Task past its due time |
 
-### Accent
+These match the LED colours on the hardware controller and are fixed across all surfaces, including light mode. State on a light surface is communicated by pairing the colour with a text label, so the label carries the WCAG contrast rather than the fill.
+
+### Accent (Dark Theme)
 
 | Name | Colour | Hex | Usage |
 |------|--------|-----|-------|
 | Primary | <span style="display:inline-block;width:14px;height:14px;background:#646cff;border-radius:50%;vertical-align:middle"></span> | `#646cff` | Links, active states, primary buttons |
 | Primary hover | <span style="display:inline-block;width:14px;height:14px;background:#535bf2;border-radius:50%;vertical-align:middle"></span> | `#535bf2` | Hover state for primary elements |
+
+### Accent (Light Theme)
+
+Accent is the one role that *isn't* theme-agnostic. As a foreground colour (links, icon buttons) it can appear without a paired label, so it gets per-theme values rather than relying on the label-pairing rule. `#646cff` falls below AA on `#ffffff` (4.1:1); `#535bf2` is already the dark-theme hover, so the light theme re-roles an existing value rather than introducing a new hue.
+
+| Name | Colour | Hex | Usage | Contrast on `#ffffff` |
+|------|--------|-----|-------|-----------------------|
+| Primary | <span style="display:inline-block;width:14px;height:14px;background:#535bf2;border-radius:50%;vertical-align:middle"></span> | `#535bf2` | Links, active states, primary buttons | 5.1:1 |
+| Primary hover | <span style="display:inline-block;width:14px;height:14px;background:#4338ca;border-radius:50%;vertical-align:middle"></span> | `#4338ca` | Hover state for primary elements | 7.9:1 |
 
 ### Feedback
 
@@ -34,6 +45,8 @@ Task status is communicated through colour across all platforms (web, mobile, ha
 | Success | <span style="display:inline-block;width:14px;height:14px;background:#4ade80;border-radius:50%;vertical-align:middle"></span> | `#4ade80` | Confirmation, complete actions |
 | Warning | <span style="display:inline-block;width:14px;height:14px;background:#fbbf24;border-radius:50%;vertical-align:middle"></span> | `#fbbf24` | Warnings, caution states |
 | Error | <span style="display:inline-block;width:14px;height:14px;background:#f87171;border-radius:50%;vertical-align:middle"></span> | `#f87171` | Errors, destructive actions |
+
+Success and Error reuse the Status hues. Warning `#fbbf24` isn't LED-anchored but is the middle traffic-light circle in the [logo](#logo), so it's fixed across surfaces for the same brand reason and rendered the same way (paired with a text label on light surfaces).
 
 ### Neutrals (Dark Theme)
 
@@ -61,9 +74,9 @@ Canonical light palette. Roles mirror the dark theme 1:1 so each platform maps t
 | Text secondary | <span style="display:inline-block;width:14px;height:14px;background:#404040;border-radius:50%;vertical-align:middle"></span> | `#404040` | Descriptions, secondary info | 10.4:1 |
 | Text muted | <span style="display:inline-block;width:14px;height:14px;background:#525252;border-radius:50%;vertical-align:middle"></span> | `#525252` | Tertiary text, placeholders | 7.8:1 |
 
-### Theme-agnostic Colours on Light
+### State-signalling Colour Contrast
 
-Status, feedback, and accent colours are intended to render unchanged in both palettes. They were chosen against the dark background; several have low contrast on `#ffffff`:
+Status and Feedback fills have low contrast on `#ffffff` — they're chosen against the dark background and the hardware LEDs. On light surfaces they're paired with a text label that carries the WCAG contrast (a status pill filled `#4ade80` with `#171717` text reads ≈9:1, even though the fill itself reads 1.7:1).
 
 | Colour | On `#1a1a1a` | On `#ffffff` |
 |--------|--------------|--------------|
@@ -71,14 +84,6 @@ Status, feedback, and accent colours are intended to render unchanged in both pa
 | Pending `#a78bfa` | 6.4:1 | 2.7:1 |
 | Overdue / Error `#f87171` | 6.3:1 | 2.8:1 |
 | Warning `#fbbf24` | 10.4:1 | 1.7:1 |
-| Primary `#646cff` | 4.3:1 | 4.1:1 |
-| Primary hover `#535bf2` | 3.4:1 | 5.1:1 |
-
-These are usable as fills carrying a dark label on top (a status pill filled `#4ade80` with `#171717` text reads ≈9:1) but fail WCAG AA when used as foreground colour on `#ffffff`. Adjustments are made at the use-site, not by overriding the tokens per theme:
-
-- **Status/feedback indicators on a light surface** — outline the shape in `#171717`, or use a darker fill for the indicator only, so it reads against white.
-- **Primary as a button fill** — white text on `#646cff` is 4.1:1, sub-AA for body-size labels. Fill with `#535bf2` (5.1:1) or use `#171717` as the label colour.
-- **Inline links on white** — use `#535bf2` (5.1:1) rather than `#646cff` (4.1:1).
 
 ### Theme Resolution
 
