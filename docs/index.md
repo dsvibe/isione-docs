@@ -19,6 +19,7 @@ This documentation covers interfaces, APIs, and flows between components. Implem
 ## Architecture
 
 - [Resources](architecture/resources.md) - Core domain concepts: pods, tasks, entries, memberships
+- [Authentication](architecture/authentication.md) - User and device auth paths
 - [Task Status](architecture/task-status.md) - How task status is calculated from completion history
 - [Decisions](architecture/decisions.md) - Technical decisions affecting the API and interfaces
 

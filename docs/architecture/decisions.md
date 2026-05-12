@@ -2,6 +2,12 @@
 
 Technical decisions affecting the API and cross-component interfaces.
 
+## OIDC Provider Neutrality
+
+The API treats the `Authorization: Bearer` token as opaque OIDC and does not read provider-specific claims. [Authentik](https://auth.dsvibe.io) is the current deployed provider; any OIDC-conformant provider could be swapped in without changing the API contract.
+
+This preserves the option to migrate identity providers without coordinated changes across web, mobile, and the physical controller.
+
 ## Durations in Microseconds
 
 Duration values (e.g. `pendingAfter`, `overdueAfter`) are represented as integers in microseconds.

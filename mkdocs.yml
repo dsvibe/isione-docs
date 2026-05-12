@@ -47,6 +47,7 @@ nav:
   - Architecture:
       - Resources: architecture/resources.md
       - Permissions: architecture/permissions.md
+      - Authentication: architecture/authentication.md
       - Task Status: architecture/task-status.md
       - Decisions: architecture/decisions.md
       - Flows:
