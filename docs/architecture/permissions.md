@@ -37,6 +37,8 @@ Flow: [Invites & Membership](flows/invites.md).
 
 Flow: [API Keys](flows/api-keys.md).
 
+All roles can mint and list keys: API-key requests reach only a read-only endpoint (see [Authentication methods](#authentication-methods)), so a viewer minting a key delegates the read access they already have to a device rather than expanding their capability.
+
 | Action | owner | member | viewer | Notes |
 |--------|:-----:|:------:|:------:|-------|
 | Create API key | ✓ | ✓ | ✓ | |
