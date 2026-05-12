@@ -16,7 +16,7 @@ Defined per [Membership](resources.md#membership).
 
 Authorisation is layered. Each tier below must pass before the next is checked.
 
-1. **Authentication** — every non-public route requires a valid bearer token tied to a known user.
+1. **Authentication** — every non-public route requires a valid bearer token tied to a known user. One route additionally accepts an API key — see [Authentication methods](#authentication-methods).
 2. **Pod access** — routes scoped to a pod (`/beta/pods/{podId}/...`) additionally require the caller to hold an *accepted* membership for that pod. Non-members and users with only pending invites receive `403`. The only authenticated route a pending invitee can call usefully is `GET /beta/invites`.
 3. **Role check** — within a pod-scoped route, the role tables below distinguish `owner`, `member`, and `viewer`. These run after the pod-access check has already established that the caller is some kind of member.
 
@@ -32,6 +32,26 @@ Flow: [Invites & Membership](flows/invites.md).
 | List pod members | ✓ | ✓ | ✓ | |
 | List pod invites | ✓ | ✓ | ✓ | |
 | Accept / reject own invite | — | — | — | Invitee acts before they hold a role |
+
+## API Keys
+
+Flow: [API Keys](flows/api-keys.md).
+
+| Action | owner | member | viewer | Notes |
+|--------|:-----:|:------:|:------:|-------|
+| Create API key | ✓ | ✓ | ✓ | |
+| List pod API keys | ✓ | ✓ | ✓ | |
+| Delete API key | ✓ (own) | ✓ (own) | ✓ (own) | Only the creator may delete; non-creator deletions receive `403` |
+
+## Authentication methods
+
+The role matrix above governs **bearer-authenticated** requests (a logged-in user accessing the API on their own behalf). API-key-authenticated requests — used by the physical controller, see [Authentication](authentication.md) — have a much narrower surface area. Exactly one endpoint accepts an API key:
+
+| Endpoint                           | Method |
+|------------------------------------|--------|
+| `/beta/pods/{podId}/device/status` | `GET`  |
+
+All other routes require bearer authentication, including API-key management itself: a controller cannot self-manage its keys or change its own slot assignments.
 
 ## Conventions for this page
 
