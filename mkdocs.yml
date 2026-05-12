@@ -55,6 +55,7 @@ nav:
           - Create Task: architecture/flows/create-task.md
           - Complete Task: architecture/flows/complete-task.md
           - Invites & Membership: architecture/flows/invites.md
+          - API Keys: architecture/flows/api-keys.md
   - Hardware:
       - Labels: hardware/labels.md
       - Printing Labels: hardware/printing-labels.md
