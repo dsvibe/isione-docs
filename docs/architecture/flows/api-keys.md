@@ -10,6 +10,8 @@ API keys are per-pod credentials used by the physical controller to authenticate
 | web        | Pod-settings UI: create / list / delete keys; display the one-shot plaintext |
 | controller | Authenticates against `GET /beta/pods/{podId}/device/status` using the key |
 
+See also: [Device Slots](device-slots.md) for what the controller does with that endpoint and how slots are configured.
+
 ## Permissions
 
 [Roles](../permissions.md#roles) and role-gated actions for this flow live on the [Permissions](../permissions.md#api-keys) page. The [Authentication methods](../permissions.md#authentication-methods) subsection records why an API-key-authenticated request can reach only a single endpoint.
