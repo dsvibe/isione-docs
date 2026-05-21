@@ -27,11 +27,11 @@ A key reaches end-of-life in one of two ways:
 
 ## API Requests
 
-[Swagger](https://api.isione.dsvibe.io/swagger/index.html) is the schema reference. The requests below are those that drive the flow.
+[Swagger](https://api-docs.isione.dsvibe.io/) is the schema reference. The requests below are those that drive the flow.
 
 ### Create Key
 
-[Swagger: POST /beta/pods/{podId}/api-keys](https://api.isione.dsvibe.io/swagger/index.html#/api-keys/post_beta_pods__podId__api-keys)
+[Swagger: POST /beta/pods/{podId}/api-keys](https://api-docs.isione.dsvibe.io/#/api-keys/createApiKey)
 
 ```http
 POST /beta/pods/{podId}/api-keys
@@ -99,7 +99,7 @@ There is no in-place rotation endpoint. To rotate: create a new key, re-pair the
 
 ### Retiring a single controller
 
-[`DELETE /beta/pods/{podId}/api-keys/{keyId}`](https://api.isione.dsvibe.io/swagger/index.html#/api-keys/delete_beta_pods__podId__api-keys__keyId_) revokes one key without affecting any other key on the pod. Use this to retire a single controller while keeping others online. Only the key's creator may delete; non-creator members receive `403`.
+[`DELETE /beta/pods/{podId}/api-keys/{keyId}`](https://api-docs.isione.dsvibe.io/#/api-keys/deleteApiKey) revokes one key without affecting any other key on the pod. Use this to retire a single controller while keeping others online. Only the key's creator may delete; non-creator members receive `403`.
 
 ### Removing a member who created keys
 

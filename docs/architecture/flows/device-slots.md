@@ -28,7 +28,7 @@ A pod member picks one of the pod's tasks in pod settings and assigns it to a sl
 
 ## API Requests
 
-[Swagger](https://api.isione.dsvibe.io/swagger/index.html) is the schema reference. The requests below are those that drive the flow.
+[Swagger](https://api-docs.isione.dsvibe.io/) is the schema reference. The requests below are those that drive the flow.
 
 ### List Slots
 

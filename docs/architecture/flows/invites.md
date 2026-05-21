@@ -66,11 +66,11 @@ Listings are split by viewpoint:
 
 ## API Requests
 
-[Swagger](https://api.isione.dsvibe.io/swagger/index.html) is the schema reference. The requests below are those that drive the flow.
+[Swagger](https://api-docs.isione.dsvibe.io/) is the schema reference. The requests below are those that drive the flow.
 
 ### Create Invite
 
-[Swagger: POST /beta/pods/{podId}/invites](https://api.isione.dsvibe.io/swagger/index.html#/invites/post_beta_pods__podId__invites)
+[Swagger: POST /beta/pods/{podId}/invites](https://api-docs.isione.dsvibe.io/#/invites/createInvite)
 
 ```http
 POST /beta/pods/{podId}/invites

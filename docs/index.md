@@ -12,7 +12,7 @@ This documentation covers interfaces, APIs, and flows between components. Implem
 |---------|-----|
 | Web app | [isione.dsvibe.io](https://isione.dsvibe.io) |
 | API | [api.isione.dsvibe.io](https://api.isione.dsvibe.io) |
-| API docs (Swagger) | [api.isione.dsvibe.io/swagger](https://api.isione.dsvibe.io/swagger/index.html) |
+| API docs (Swagger) | [api-docs.isione.dsvibe.io](https://api-docs.isione.dsvibe.io/) |
 | Auth (Authentik) | [auth.dsvibe.io](https://auth.dsvibe.io) |
 | OpenID issuer | [auth.dsvibe.io/application/o/isione](https://auth.dsvibe.io/application/o/isione/) |
 
