@@ -23,7 +23,7 @@ Creates a new [Task](../resources.md#task) within a pod.
 
 ## API Request
 
-[Swagger: POST /beta/pods/{podId}/tasks](https://api.isione.dsvibe.io/swagger/index.html#/tasks/post_beta_pods__podId__tasks)
+[Swagger: POST /beta/pods/{podId}/tasks](https://api-docs.isione.dsvibe.io/#/tasks/createTask)
 
 ```http
 POST /beta/pods/{podId}/tasks

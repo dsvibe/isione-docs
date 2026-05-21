@@ -19,7 +19,7 @@ Creates a new [Pod](../resources.md#pod) and adds the authenticated user as owne
 
 ## API Request
 
-[Swagger: POST /beta/pods](https://api.isione.dsvibe.io/swagger/index.html#/pods/post_beta_pods)
+[Swagger: POST /beta/pods](https://api-docs.isione.dsvibe.io/#/pods/createPod)
 
 ```http
 POST /beta/pods
