@@ -67,3 +67,38 @@ ios/              # iOS app docs
 controller/       # ESPHome controller docs
 hardware/         # Physical components: enclosures, labels, NFC tags
 ```
+
+## Verifying changes
+
+This machine has Docker but not Python/mkdocs. Build the site with the same
+mkdocs-material version pinned in `requirements.txt`, so the version tracks CI
+and Renovate automatically — no second version string to keep in sync:
+
+```
+docker run --rm -v "$PWD:/docs" \
+  squidfunk/mkdocs-material:$(grep '^mkdocs-material==' requirements.txt | cut -d= -f3) \
+  build --strict
+```
+
+`--strict` fails the build on broken links or anchors — treat it as the
+canonical local verify.
+
+The live OpenAPI spec is the source of truth for endpoints, operation IDs, tags,
+and response field shapes: <https://api.isione.dsvibe.io/openapi.json> (the URL
+the Swagger UI loads). Use it to confirm Swagger deep-link anchors
+(`#/{tag}/{operationId}`) and public field names.
+
+## Flow-doc API sections
+
+Each flow's `## API Requests` section lists **only** the requests that drive
+that flow — one `### Action` subsection each, opening with a deep-link to the
+specific Swagger operation:
+
+```
+[Swagger: METHOD /path](https://api-docs.isione.dsvibe.io/#/{tag}/{operationId})
+```
+
+Swagger is the canonical catalogue; do **not** add summary tables enumerating
+all endpoints, parameters, or status codes. Operation IDs and tags come from the
+OpenAPI spec above — note resources have distinct tags (e.g. members endpoints
+live under `members`, not `invites`).
