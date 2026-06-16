@@ -42,7 +42,7 @@ A record of a task completion. Each time a task is completed, a new entry is cre
 
 ## Membership
 
-Links users to pods with role-based access.
+Links users to pods with role-based access. A single membership row per `(userId, podId)` pair doubles as both the *invite* and the resulting *membership* — there is no separate invite resource.
 
 | Field | Type | Description |
 |-------|------|-------------|
@@ -50,7 +50,19 @@ Links users to pods with role-based access.
 | podId | UUID | Pod they belong to |
 | role | enum | `owner`, `member`, or `viewer` |
 | createdAt | timestamp | When invited |
-| acceptedAt | timestamp | When accepted (null = pending) |
+| acceptedAt | timestamp | When the invite was accepted, or null |
+| invitedBy | UUID | User who sent the invite, or null for legacy rows |
+| invitedByName | string | Display name of the inviter, or null |
+
+The membership is observable in one of three states, derived from whether it has been accepted or rejected:
+
+| State | Condition | Meaning |
+|-------|-----------|---------|
+| pending | neither accepted nor rejected | invite sent, awaiting the invitee's response |
+| accepted | `acceptedAt` is set | active member |
+| rejected | rejection recorded | invitee declined; sticky (blocks re-invite) |
+
+A pod's creator gets an `owner` membership that is accepted at creation time, so owners are never pending. See [Invites & Membership](flows/invites.md) for the full state machine and transition rules.
 
 ## API Key
 

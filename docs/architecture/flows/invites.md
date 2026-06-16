@@ -19,17 +19,24 @@ A pod's creator becomes its `owner` at pod creation (see [Create Pod](create-pod
 
 ```
             invite created
+            (owner/member)
                   │
                   ▼
               ┌────────┐  accept   ┌──────────┐
               │pending │──────────▶│ accepted │
               └────────┘           └──────────┘
-                  │ reject              │ owner removes member
-                  ▼                     ▼
-              ┌────────┐           (row deleted)
-              │rejected│
-              └────────┘
+               │      │                  │
+        reject │      │ cancel           │ owner removes member
+               │      │ (owner/inviter)  │
+               ▼      ▼                  ▼
+          ┌────────┐ (row deleted) ─── (row deleted)
+          │rejected│ re-invitable      re-invitable
+          └────────┘
+           sticky:
+           blocks re-invite
 ```
+
+Both **cancel** (withdrawing a pending invite) and **remove** (ejecting an accepted member) delete the row, leaving the user re-invitable. Only **reject** persists, blocking re-invite. See [Cancel vs. reject vs. remove](#cancel-vs-reject-vs-remove) for the full asymmetry.
 
 From the API's perspective, a membership is observable in only one state at a time:
 
@@ -47,11 +54,25 @@ From the API's perspective, a membership is observable in only one state at a ti
 | rejected | `user has rejected a previous invite` |
 | pending | `user already has a pending invite` |
 
-The rejected state is **terminal**: there is no re-invite path through the API. Recovery requires a manual DB reset.
+The rejected state is **terminal**: there is no re-invite path and no API flow to clear a rejection — see [Cancel vs. reject vs. remove](#cancel-vs-reject-vs-remove).
 
-### Removal vs. rejection asymmetry
+### Cancel vs. reject vs. remove
 
-Member removal (`DELETE /beta/pods/{podId}/members/{userId}`) clears the membership entirely, so an owner can re-invite the same user afterward. Rejection marks the membership as rejected and blocks re-invite. The asymmetry is intentional: an invitee's "no" is sticky, an owner's "removed" is reversible.
+Three different "undo" actions exist, and they are deliberately **not** symmetric. This is the part consumers most often get wrong.
+
+> **Mental model:** an invitee's refusal is permanent; an owner's withdrawal is always reversible.
+
+| Action | Who | Applies to | Effect | Re-invitable after? |
+|--------|-----|------------|--------|:-------------------:|
+| **Reject** | invitee | pending invite | marks the membership `rejected` | **No** — sticky |
+| **Cancel** | owner or original inviter | pending invite | deletes the row | Yes |
+| **Remove** | owner | accepted member | deletes the row | Yes |
+
+- **Reject** (`POST /beta/invites/{podId}/reject`): the invitee says no. The membership becomes `rejected` and re-invite returns `409`. There is no server flow to clear a rejection, so today it is effectively permanent.
+- **Cancel** (`DELETE /beta/pods/{podId}/invites/{userId}`): the owner or original inviter withdraws a *pending* invite. The row is deleted outright, so the same user can be invited again (`201`). Attempting to cancel an *accepted* membership through this endpoint returns `400` ("cannot cancel accepted membership") — use the member-removal endpoint instead.
+- **Remove** (`DELETE /beta/pods/{podId}/members/{userId}`): the owner ejects an *accepted* member. The row is deleted, so the user can be re-invited and re-accept later.
+
+Remove is the intentional asymmetric counterpart to rejection: an invitee's "no" sticks, but an owner's "removed" does not.
 
 ## Auto-User Creation
 
@@ -66,7 +87,7 @@ Listings are split by viewpoint:
 
 ## API Requests
 
-[Swagger](https://api-docs.isione.dsvibe.io/) is the schema reference. The requests below are those that drive the flow.
+[Swagger](https://api-docs.isione.dsvibe.io/) is the schema reference for all endpoints, parameters, and status codes. The requests below are those that drive the flow.
 
 ### Create Invite
 
@@ -83,20 +104,31 @@ Content-Type: application/json
 }
 ```
 
-`role` must be `member` or `viewer`. The response carries `invitedBy` and `invitedByName` as nullable fields (null for legacy invites whose origin was never recorded, or when the inviter has no display name).
+`role` must be `member` or `viewer` — the `owner` role is **not assignable via an invite** (there is no ownership-transfer flow; see [Open questions](#open-questions)). Inviting an email with no existing user [auto-creates one](#auto-user-creation). The created invite echoes back `invitedBy` and `invitedByName` identifying the sender. In the listing views these fields can be null — for legacy invites whose origin predates inviter tracking, or when the inviter has no display name.
 
 ### Accept and Reject
 
-The invitee acts on their pending invites:
+[Swagger: POST /beta/invites/{podId}/accept](https://api-docs.isione.dsvibe.io/#/invites/acceptInvite)
+· [Swagger: POST /beta/invites/{podId}/reject](https://api-docs.isione.dsvibe.io/#/invites/rejectInvite)
+
+The invitee acts on their own pending invites:
 
 ```http
 POST /beta/invites/{podId}/accept
 POST /beta/invites/{podId}/reject
 ```
 
-Acceptance gives the caller the role from the invite. Rejection is terminal — re-inviting the same email returns `409`; see [Re-invite conflicts](#re-invite-conflicts).
+Acceptance gives the caller the role from the invite. Both endpoints require a *pending* invite to act on:
+
+- No invite to act on (no pending invite for the caller on that pod) → `404`.
+- The invite is no longer pending — already accepted, or already rejected → `400`.
+
+Rejection is terminal — re-inviting the same email returns `409`; see [Re-invite conflicts](#re-invite-conflicts).
 
 ### Cancel and Remove
+
+[Swagger: DELETE /beta/pods/{podId}/invites/{userId}](https://api-docs.isione.dsvibe.io/#/invites/deleteInvite)
+· [Swagger: DELETE /beta/pods/{podId}/members/{userId}](https://api-docs.isione.dsvibe.io/#/members/removePodMember)
 
 Two different undo paths with intentionally different semantics:
 
@@ -105,10 +137,16 @@ DELETE /beta/pods/{podId}/invites/{userId}   # cancel a pending invite
 DELETE /beta/pods/{podId}/members/{userId}   # remove an accepted member
 ```
 
-- **Cancel** is authorised for the pod owner OR the original inviter (provided the inviter is still an accepted member). It only applies to pending invites; cancelling an accepted membership returns `400`.
-- **Remove** is owner-only. The owner cannot remove themselves. The membership is cleared entirely, allowing re-invite — see [Removal vs. rejection asymmetry](#removal-vs-rejection-asymmetry).
+- **Cancel** is authorised for the pod owner OR the original inviter (provided the inviter is still an accepted member). It only applies to pending invites; cancelling an accepted membership returns `400` (use removal instead). Success is `204`.
+- **Remove** is owner-only. The owner cannot remove themselves (`400`). The membership is cleared entirely, allowing re-invite. Success is `204`.
+
+See [Cancel vs. reject vs. remove](#cancel-vs-reject-vs-remove) for why these two deletes and rejection behave differently.
 
 ### Listings
+
+[Swagger: GET /beta/invites](https://api-docs.isione.dsvibe.io/#/invites/listMyInvites)
+· [Swagger: GET /beta/pods/{podId}/invites](https://api-docs.isione.dsvibe.io/#/invites/listPodInvites)
+· [Swagger: GET /beta/pods/{podId}/members](https://api-docs.isione.dsvibe.io/#/members/listPodMembers)
 
 ```http
 GET /beta/invites                  # invitee's view across all pods
@@ -117,6 +155,14 @@ GET /beta/pods/{podId}/members     # accepted members for one pod
 ```
 
 See [Two Listing Endpoints](#two-listing-endpoints) for why the inviter and invitee have separate routes.
+
+## Open questions
+
+Gaps in the current server surface, flagged for product confirmation:
+
+- **No way to clear a rejection.** Rejection is permanent today — there is no API flow to reset a `rejected` membership, so a user who declines can never be re-invited. Confirm whether this is intended.
+- **No ownership transfer.** The `owner` role is granted only at pod creation and cannot be assigned via invite or reassigned afterward.
+- **No way for an owner to leave a pod they own.** An owner cannot remove themselves (`400`), and with no transfer flow there is no documented path for an owner to exit.
 
 ## Sequence Diagrams
 
